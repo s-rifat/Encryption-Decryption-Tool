@@ -8,7 +8,7 @@
 
   <div>
     <label for="keywordInput">Keyword:</label>
-    <input id="keywordInput" [(ngModel)]="keyword" (input)="onKeywordInput($event)" placeholder="Enter keyword">
+    <input id="keywordInput" [(ngModel)]="keyword" (input)="onKeywordInput($event)" maxlength="25" placeholder="Enter keyword">
   </div>
 
   <div *ngIf="matrix.length > 0">
@@ -21,11 +21,15 @@
   </div>
 
   <div>
-    <button (click)="encrypt()">Encrypt</button>
-    <button (click)="decrypt()">Decrypt</button>
+    <button (click)="encrypt()" [disabled]="!text || !keyword">Encrypt</button>
+    <button (click)="decrypt()" [disabled]="!text || !keyword">Decrypt</button>
   </div>
 
-  <div>
+  <div *ngIf="errorMessage !== null" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="result">
     <h3>Result:</h3>
     <p>{{ result }}</p>
   </div>

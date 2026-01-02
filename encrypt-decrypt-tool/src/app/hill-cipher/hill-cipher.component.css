@@ -1,1 +1,15 @@
 /* hill-cipher.component.css */
+
+.key-matrix table {
+  width: auto; /* Allow the table to shrink to the content size */
+  margin-left: 0; /* Align to the left */
+}
+
+.key-matrix td {
+  padding: 0.2rem;
+}
+
+.key-matrix input {
+  width: 60px; /* Adjust width as needed */
+  text-align: center;
+}

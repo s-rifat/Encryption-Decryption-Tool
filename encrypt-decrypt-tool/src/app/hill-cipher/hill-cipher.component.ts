@@ -12,6 +12,7 @@ export class HillCipherComponent {
   text: string = '';
   keyMatrix: number[][] = [[0, 0], [0, 0]]; // Initialize with dummy values
   result: string = '';
+  errorMessage: string | null = null;
 
   private readonly ALPHABET_SIZE = 26;
 
@@ -24,6 +25,7 @@ export class HillCipherComponent {
     const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
     this.text = filteredValue;
     inputElement.value = filteredValue;
+    this.errorMessage = null; // Clear error message on input change
   }
 
   onKeyInput(row: number, col: number, event: Event): void {
@@ -38,9 +40,11 @@ export class HillCipherComponent {
       this.keyMatrix[row][col] = keyValue;
       inputElement.value = keyValue.toString();
     }
+    this.errorMessage = null; // Clear error message on input change
   }
 
   generateValidKey(): void {
+    this.errorMessage = null; // Clear previous errors
     let det = 0;
     let detInverse = -1;
     let tempMatrix: number[][] = [[0,0],[0,0]];
@@ -59,23 +63,38 @@ export class HillCipherComponent {
   }
 
   encrypt(): void {
+    this.errorMessage = null; // Clear previous errors
+    if (!this.text) {
+      this.errorMessage = 'Please enter text to encrypt.';
+      return;
+    }
     try {
       this.result = this.hillCipher(this.text, this.keyMatrix, true);
     } catch (e: any) {
-      this.result = `Error: ${e.message}`;
+      this.errorMessage = e.message;
+      this.result = ''; // Clear result if there's an error
     }
   }
 
   decrypt(): void {
+    this.errorMessage = null; // Clear previous errors
+    if (!this.text) {
+      this.errorMessage = 'Please enter text to decrypt.';
+      return;
+    }
     try {
       this.result = this.hillCipher(this.text, this.keyMatrix, false);
     } catch (e: any) {
-      this.result = `Error: ${e.message}`;
+      this.errorMessage = e.message;
+      this.result = ''; // Clear result if there's an error
     }
   }
 
   private hillCipher(inputText: string, key: number[][], encrypt: boolean): string {
     const processedText = this.preprocessText(inputText);
+    if (processedText.length === 0) {
+      throw new Error("No alphabetic characters to process.");
+    }
     if (processedText.length % 2 !== 0) {
       throw new Error("Plaintext length must be even for 2x2 Hill Cipher. Please ensure input can be paired.");
     }

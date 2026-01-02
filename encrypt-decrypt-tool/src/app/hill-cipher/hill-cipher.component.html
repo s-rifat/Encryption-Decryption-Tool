@@ -8,14 +8,16 @@
 
   <div class="key-matrix">
     <h3>Key Matrix (2x2):</h3>
-    <div class="matrix-row">
-      <input type="number" [(ngModel)]="keyMatrix[0][0]" (input)="onKeyInput(0, 0, $event)" min="0" max="25">
-      <input type="number" [(ngModel)]="keyMatrix[0][1]" (input)="onKeyInput(0, 1, $event)" min="0" max="25">
-    </div>
-    <div class="matrix-row">
-      <input type="number" [(ngModel)]="keyMatrix[1][0]" (input)="onKeyInput(1, 0, $event)" min="0" max="25">
-      <input type="number" [(ngModel)]="keyMatrix[1][1]" (input)="onKeyInput(1, 1, $event)" min="0" max="25">
-    </div>
+    <table>
+      <tr>
+        <td><input type="number" [(ngModel)]="keyMatrix[0][0]" (input)="onKeyInput(0, 0, $event)" min="0" max="25"></td>
+        <td><input type="number" [(ngModel)]="keyMatrix[0][1]" (input)="onKeyInput(0, 1, $event)" min="0" max="25"></td>
+      </tr>
+      <tr>
+        <td><input type="number" [(ngModel)]="keyMatrix[1][0]" (input)="onKeyInput(1, 0, $event)" min="0" max="25"></td>
+        <td><input type="number" [(ngModel)]="keyMatrix[1][1]" (input)="onKeyInput(1, 1, $event)" min="0" max="25"></td>
+      </tr>
+    </table>
   </div>
   
   <div>
@@ -23,8 +25,12 @@
   </div>
 
   <div>
-    <button (click)="encrypt()">Encrypt</button>
-    <button (click)="decrypt()">Decrypt</button>
+    <button (click)="encrypt()" [disabled]="!text">Encrypt</button>
+    <button (click)="decrypt()" [disabled]="!text">Decrypt</button>
+  </div>
+
+  <div *ngIf="errorMessage !== null" class="error-message">
+    <p>{{ errorMessage }}</p>
   </div>
 
   <div>

@@ -13,7 +13,7 @@ export class HillCrackerComponent {
   plaintext: string = '';
   ciphertext: string = '';
   keyMatrixResult: number[][] | null = null;
-  error: string | null = null;
+  errorMessage: string | null = null; // Renamed from 'error'
 
   private readonly ALPHABET_SIZE = 26;
 
@@ -26,10 +26,13 @@ export class HillCrackerComponent {
       this.ciphertext = filteredValue;
     }
     inputElement.value = filteredValue;
+    this.errorMessage = null; // Clear error message on input change
+    this.keyMatrixResult = null; // Clear key result as well
   }
 
   generateValidPair(): void {
-    this.error = null;
+    this.errorMessage = null; // Clear previous errors
+    this.keyMatrixResult = null; // Clear previous results
     let validPMatrixFound = false;
     let P_matrix: number[][] = [[0,0],[0,0]];
     let K_matrix: number[][] = [[0,0],[0,0]];
@@ -71,10 +74,10 @@ export class HillCrackerComponent {
 
   crackKey(): void {
     this.keyMatrixResult = null;
-    this.error = null;
+    this.errorMessage = null; // Clear previous errors
 
     if (this.plaintext.length !== 4 || this.ciphertext.length !== 4) {
-      this.error = 'Plaintext and Ciphertext must both be 4 letters long.';
+      this.errorMessage = 'Plaintext and Ciphertext must both be 4 letters long.';
       return;
     }
 
@@ -89,7 +92,7 @@ export class HillCrackerComponent {
       const K = this.matrixMultiply(P_inverse, C_matrix);
       this.keyMatrixResult = K;
     } catch (e: any) {
-      this.error = e.message;
+      this.errorMessage = e.message;
     }
   }
 

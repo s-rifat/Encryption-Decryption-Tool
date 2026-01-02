@@ -6,6 +6,7 @@ import { HillCipherComponent } from './hill-cipher/hill-cipher.component';
 import { HillCrackerComponent } from './hill-cracker/hill-cracker.component';
 
 export const routes: Routes = [
+    { path: '', redirectTo: '/caesar-cipher', pathMatch: 'full' },
     { path: 'caesar-cipher', component: CaesarCipherComponent },
     { path: 'affine-cipher', component: AffineCipherComponent },
     { path: 'playfair-cipher', component: PlayfairCipherComponent },

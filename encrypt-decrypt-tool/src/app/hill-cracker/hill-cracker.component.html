@@ -16,19 +16,18 @@
   </div>
 
   <div>
-    <button (click)="crackKey()">Crack Key</button>
+    <button (click)="crackKey()" [disabled]="plaintext.length !== 4 || ciphertext.length !== 4">Crack Key</button>
     <button (click)="generateValidPair()">Generate Valid Pair</button>
   </div>
 
   <div *ngIf="keyMatrixResult">
     <h3>Deduced Key Matrix (K):</h3>
-    <p *ngIf="error" style="color: red;">{{ error }}</p>
-    <div *ngIf="!error" class="key-matrix-display">
+    <div *ngIf="!errorMessage" class="key-matrix-display">
       <div>[{{ keyMatrixResult[0][0] }}, {{ keyMatrixResult[0][1] }}]</div>
       <div>[{{ keyMatrixResult[1][0] }}, {{ keyMatrixResult[1][1] }}]</div>
     </div>
   </div>
-  <div *ngIf="error && !keyMatrixResult">
-    <p style="color: red;">{{ error }}</p>
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
   </div>
 </div>

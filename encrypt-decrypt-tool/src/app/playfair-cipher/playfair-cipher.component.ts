@@ -14,6 +14,7 @@ export class PlayfairCipherComponent {
   keyword: string = '';
   result: string = '';
   matrix: string[][] = [];
+  errorMessage: string | null = null;
 
   constructor() {
     // Generate initial matrix with a default keyword or empty to start
@@ -26,6 +27,7 @@ export class PlayfairCipherComponent {
     const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
     this.text = filteredValue;
     inputElement.value = filteredValue;
+    this.errorMessage = null; // Clear error message on input change
   }
   
   onKeywordInput(event: Event): void {
@@ -35,11 +37,17 @@ export class PlayfairCipherComponent {
     this.keyword = filteredValue;
     inputElement.value = filteredValue;
     this.generateMatrix(this.keyword); // Regenerate matrix when keyword changes
+    this.errorMessage = null; // Clear error message on input change
   }
   
   encrypt(): void {
+    this.errorMessage = null; // Clear previous errors
+    if (!this.text) {
+      this.errorMessage = 'Please enter text to encrypt.';
+      return;
+    }
     if (!this.keyword) {
-      this.result = 'Error: Please enter a keyword.';
+      this.errorMessage = 'Please enter a keyword.';
       return;
     }
     // Matrix is already generated on keyword input, but ensure it's up-to-date
@@ -49,8 +57,13 @@ export class PlayfairCipherComponent {
   }
 
   decrypt(): void {
+    this.errorMessage = null; // Clear previous errors
+    if (!this.text) {
+      this.errorMessage = 'Please enter text to decrypt.';
+      return;
+    }
     if (!this.keyword) {
-      this.result = 'Error: Please enter a keyword.';
+      this.errorMessage = 'Please enter a keyword.';
       return;
     }
     // Matrix is already generated on keyword input, but ensure it's up-to-date

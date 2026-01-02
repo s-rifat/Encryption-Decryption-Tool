@@ -19,11 +19,15 @@
   </div>
 
   <div>
-    <button (click)="encrypt()">Encrypt</button>
-    <button (click)="decrypt()">Decrypt</button>
+    <button (click)="encrypt()" [disabled]="!text">Encrypt</button>
+    <button (click)="decrypt()" [disabled]="!text">Decrypt</button>
   </div>
 
-  <div>
+  <div *ngIf="errorMessage !== null" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <div *ngIf="result">
     <h3>Result:</h3>
     <p>{{ result }}</p>
   </div>
