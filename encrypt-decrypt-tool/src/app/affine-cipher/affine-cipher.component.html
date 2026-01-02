@@ -1,0 +1,30 @@
+<div>
+  <h2>Affine Cipher</h2>
+
+  <div>
+    <label for="textInput">Text:</label>
+    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+  </div>
+
+  <div>
+    <label for="alphaKeyInput">Alpha Key (a):</label>
+    <select id="alphaKeyInput" [(ngModel)]="alphaKey">
+      <option *ngFor="let key of possibleAlphaKeys" [ngValue]="key">{{ key }}</option>
+    </select>
+  </div>
+
+  <div>
+    <label for="betaKeyInput">Beta Key (b):</label>
+    <input id="betaKeyInput" type="number" [(ngModel)]="betaKey" min="0" max="25">
+  </div>
+
+  <div>
+    <button (click)="encrypt()">Encrypt</button>
+    <button (click)="decrypt()">Decrypt</button>
+  </div>
+
+  <div>
+    <h3>Result:</h3>
+    <p>{{ result }}</p>
+  </div>
+</div>
