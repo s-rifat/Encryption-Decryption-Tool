@@ -13,6 +13,27 @@ export class CaesarCipherComponent {
   key: number = 3; // Default Caesar cipher key
   result: string = '';
 
+  onTextInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '');
+    this.text = filteredValue;
+    inputElement.value = filteredValue; // Update the input element's value directly
+  }
+
+  onKeyInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let keyValue = parseInt(inputElement.value, 10);
+
+    if (isNaN(keyValue)) {
+      this.key = 0;
+      inputElement.value = '0';
+    } else {
+      keyValue = Math.max(0, Math.min(25, keyValue)); // Restrict between 0 and 25
+      this.key = keyValue;
+      inputElement.value = keyValue.toString(); // Update input element's value
+    }
+  }
+
   encrypt(): void {
     this.result = this.caesarCipher(this.text, this.key, true);
   }

@@ -3,12 +3,21 @@
 
   <div>
     <label for="textInput">Text:</label>
-    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+    <input id="textInput" [(ngModel)]="text" (input)="onTextInput($event)" placeholder="Enter text">
   </div>
 
   <div>
     <label for="keywordInput">Keyword:</label>
-    <input id="keywordInput" [(ngModel)]="keyword" placeholder="Enter keyword">
+    <input id="keywordInput" [(ngModel)]="keyword" (input)="onKeywordInput($event)" placeholder="Enter keyword">
+  </div>
+
+  <div *ngIf="matrix.length > 0">
+    <h3>Generated Key Matrix:</h3>
+    <table>
+      <tr *ngFor="let row of matrix">
+        <td *ngFor="let cell of row">{{ cell }}</td>
+      </tr>
+    </table>
   </div>
 
   <div>

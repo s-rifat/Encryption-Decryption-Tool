@@ -3,15 +3,23 @@
 
   <div>
     <label for="textInput">Text:</label>
-    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+    <input id="textInput" [(ngModel)]="text" (input)="onTextInput($event)" placeholder="Enter text">
   </div>
 
   <div class="key-matrix">
     <h3>Key Matrix (2x2):</h3>
-    <input type="number" [(ngModel)]="keyMatrix[0][0]" min="0" max="25">
-    <input type="number" [(ngModel)]="keyMatrix[0][1]" min="0" max="25">
-    <input type="number" [(ngModel)]="keyMatrix[1][0]" min="0" max="25">
-    <input type="number" [(ngModel)]="keyMatrix[1][1]" min="0" max="25">
+    <div class="matrix-row">
+      <input type="number" [(ngModel)]="keyMatrix[0][0]" (input)="onKeyInput(0, 0, $event)" min="0" max="25">
+      <input type="number" [(ngModel)]="keyMatrix[0][1]" (input)="onKeyInput(0, 1, $event)" min="0" max="25">
+    </div>
+    <div class="matrix-row">
+      <input type="number" [(ngModel)]="keyMatrix[1][0]" (input)="onKeyInput(1, 0, $event)" min="0" max="25">
+      <input type="number" [(ngModel)]="keyMatrix[1][1]" (input)="onKeyInput(1, 1, $event)" min="0" max="25">
+    </div>
+  </div>
+  
+  <div>
+    <button (click)="generateValidKey()">Generate Valid Key</button>
   </div>
 
   <div>

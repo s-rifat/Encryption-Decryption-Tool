@@ -10,10 +10,53 @@ import { FormsModule } from '@angular/forms';
 })
 export class HillCipherComponent {
   text: string = '';
-  keyMatrix: number[][] = [[17, 17], [5, 21]]; // Example 2x2 key matrix
+  keyMatrix: number[][] = [[0, 0], [0, 0]]; // Initialize with dummy values
   result: string = '';
 
   private readonly ALPHABET_SIZE = 26;
+
+  constructor() {
+    this.generateValidKey(); // Generate a valid key on component initialization
+  }
+
+  onTextInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    this.text = filteredValue;
+    inputElement.value = filteredValue;
+  }
+
+  onKeyInput(row: number, col: number, event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let keyValue = parseInt(inputElement.value, 10);
+
+    if (isNaN(keyValue)) {
+      this.keyMatrix[row][col] = 0;
+      inputElement.value = '0';
+    } else {
+      keyValue = Math.max(0, Math.min(25, keyValue));
+      this.keyMatrix[row][col] = keyValue;
+      inputElement.value = keyValue.toString();
+    }
+  }
+
+  generateValidKey(): void {
+    let det = 0;
+    let detInverse = -1;
+    let tempMatrix: number[][] = [[0,0],[0,0]];
+  
+    while (detInverse === -1) {
+      for(let i=0; i<2; i++) {
+        for(let j=0; j<2; j++) {
+          tempMatrix[i][j] = Math.floor(Math.random() * 26);
+        }
+      }
+      det = tempMatrix[0][0] * tempMatrix[1][1] - tempMatrix[0][1] * tempMatrix[1][0];
+      const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
+      detInverse = this.modInverse(detMod26, this.ALPHABET_SIZE);
+    }
+    this.keyMatrix = tempMatrix;
+  }
 
   encrypt(): void {
     try {
@@ -92,6 +135,13 @@ export class HillCipherComponent {
       }
     }
     return inverseMatrix;
+  }
+
+  private gcd(a: number, b: number): number {
+    while (b) {
+      [a, b] = [b, a % b];
+    }
+    return a;
   }
 
   // Function to find modular multiplicative inverse

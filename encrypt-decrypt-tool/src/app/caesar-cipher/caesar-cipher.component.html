@@ -3,12 +3,12 @@
 
   <div>
     <label for="textInput">Text:</label>
-    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+    <input id="textInput" [(ngModel)]="text" (input)="onTextInput($event)" placeholder="Enter text">
   </div>
 
   <div>
     <label for="keyInput">Key (0-25):</label>
-    <input id="keyInput" type="number" [(ngModel)]="key" min="0" max="25">
+    <input id="keyInput" type="number" [(ngModel)]="key" (input)="onKeyInput($event)" min="0" max="25">
   </div>
 
   <div>

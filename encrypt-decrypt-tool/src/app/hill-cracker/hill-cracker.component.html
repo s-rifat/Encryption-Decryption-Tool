@@ -7,16 +7,17 @@
   <div class="input-section">
     <div>
       <label for="plaintextArea">Plaintext (4 letters, e.g., 'ABCD'):</label>
-      <input id="plaintextArea" [(ngModel)]="plaintext" maxlength="4" placeholder="e.g., 'PTHA'">
+      <input id="plaintextArea" [(ngModel)]="plaintext" (input)="onTextInput($event, 'plaintext')" maxlength="4" placeholder="e.g., 'PTHA'">
     </div>
     <div>
       <label for="ciphertextArea">Ciphertext (4 letters, e.g., 'LMNO'):</label>
-      <input id="ciphertextArea" [(ngModel)]="ciphertext" maxlength="4" placeholder="e.g., 'QEDM'">
+      <input id="ciphertextArea" [(ngModel)]="ciphertext" (input)="onTextInput($event, 'ciphertext')" maxlength="4" placeholder="e.g., 'QEDM'">
     </div>
   </div>
 
   <div>
     <button (click)="crackKey()">Crack Key</button>
+    <button (click)="generateValidPair()">Generate Valid Pair</button>
   </div>
 
   <div *ngIf="keyMatrixResult">

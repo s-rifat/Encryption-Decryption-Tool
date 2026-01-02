@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-playfair-cipher',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
   templateUrl: './playfair-cipher.component.html',
   styleUrl: './playfair-cipher.component.css'
 })
@@ -12,13 +13,36 @@ export class PlayfairCipherComponent {
   text: string = '';
   keyword: string = '';
   result: string = '';
-  private matrix: string[][] = [];
+  matrix: string[][] = [];
 
+  constructor() {
+    // Generate initial matrix with a default keyword or empty to start
+    this.generateMatrix(this.keyword);
+  }
+
+  onTextInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    // Filter out non-alphabetic characters and convert to uppercase
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    this.text = filteredValue;
+    inputElement.value = filteredValue;
+  }
+  
+  onKeywordInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    // Filter out non-alphabetic characters and convert to uppercase
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    this.keyword = filteredValue;
+    inputElement.value = filteredValue;
+    this.generateMatrix(this.keyword); // Regenerate matrix when keyword changes
+  }
+  
   encrypt(): void {
     if (!this.keyword) {
       this.result = 'Error: Please enter a keyword.';
       return;
     }
+    // Matrix is already generated on keyword input, but ensure it's up-to-date
     this.generateMatrix(this.keyword);
     let processedText = this.preprocessText(this.text, true);
     this.result = this.playfair(processedText, true);
@@ -29,12 +53,14 @@ export class PlayfairCipherComponent {
       this.result = 'Error: Please enter a keyword.';
       return;
     }
+    // Matrix is already generated on keyword input, but ensure it's up-to-date
     this.generateMatrix(this.keyword);
     let processedText = this.preprocessText(this.text, false); // Decryption input needs less preprocessing
-    this.result = this.playfair(processedText, false);
+    let decryptedText = this.playfair(processedText, false);
+    this.result = this.postprocessDecryptedText(decryptedText);
   }
 
-  private generateMatrix(keyword: string): void {
+  generateMatrix(keyword: string): void {
     const alphabet = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'; // J is omitted
     let keySquare = keyword.toUpperCase().replace(/J/g, 'I').replace(/[^A-Z]/g, '');
     let seen = new Set<string>();
@@ -69,24 +95,24 @@ export class PlayfairCipherComponent {
 
     if (isEncryption) {
       for (let i = 0; i < processed.length; i += 2) {
-        if (i + 1 === processed.length) {
+        if (i + 1 >= processed.length) {
           result += processed[i] + 'X';
+          break; // Exit loop after handling the last character
+        }
+        let char1 = processed[i];
+        let char2 = processed[i + 1];
+        if (char1 === char2) {
+          result += char1 + 'X';
+          i--; // Re-process the second character with a new pair
         } else {
-          let char1 = processed[i];
-          let char2 = processed[i + 1];
-          if (char1 === char2) {
-            result += char1 + 'X';
-            i--; // Re-process the second character with a new pair
-          } else {
-            result += char1 + char2;
-          }
+          result += char1 + char2;
         }
       }
-    } else { // For decryption, we expect digrams and don't add fillers
+    }
+    else { // For decryption, we expect digrams and don't add fillers
       result = processed;
     }
 
-    // Ensure even length for encryption, add 'X' if odd
     if (isEncryption && result.length % 2 !== 0) {
       result += 'X';
     }
@@ -114,7 +140,7 @@ export class PlayfairCipherComponent {
       let pos2 = this.findCharPosition(char2);
 
       if (!pos1 || !pos2) {
-        // Handle error or skip character
+        // This should not happen with the new validation, but as a fallback:
         output += char1 + char2;
         continue;
       }
@@ -138,5 +164,22 @@ export class PlayfairCipherComponent {
       output += newChar1 + newChar2;
     }
     return output;
+  }
+
+  private postprocessDecryptedText(text: string): string {
+    let result = '';
+    for (let i = 0; i < text.length; i++) {
+        if (text[i] === 'X' && i > 0 && i < text.length - 1 && text[i - 1] === text[i + 1]) {
+            continue;
+        }
+        result += text[i];
+    }
+    
+    // Remove trailing 'X' if it was added for padding
+    if(result.endsWith('X')){
+        result = result.slice(0, -1);
+    }
+
+    return result;
   }
 }

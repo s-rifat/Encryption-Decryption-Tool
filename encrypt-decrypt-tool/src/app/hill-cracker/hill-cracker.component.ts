@@ -17,6 +17,58 @@ export class HillCrackerComponent {
 
   private readonly ALPHABET_SIZE = 26;
 
+  onTextInput(event: Event, type: 'plaintext' | 'ciphertext'): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    if (type === 'plaintext') {
+      this.plaintext = filteredValue;
+    } else {
+      this.ciphertext = filteredValue;
+    }
+    inputElement.value = filteredValue;
+  }
+
+  generateValidPair(): void {
+    this.error = null;
+    let validPMatrixFound = false;
+    let P_matrix: number[][] = [[0,0],[0,0]];
+    let K_matrix: number[][] = [[0,0],[0,0]];
+
+    // 1. Generate a random, valid (invertible) 2x2 key matrix K
+    let detKInverse = -1;
+    while(detKInverse === -1){
+      for(let i=0; i<2; i++) {
+        for(let j=0; j<2; j++) {
+          K_matrix[i][j] = Math.floor(Math.random() * this.ALPHABET_SIZE);
+        }
+      }
+      const detK = K_matrix[0][0] * K_matrix[1][1] - K_matrix[0][1] * K_matrix[1][0];
+      const detKMod26 = (detK % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
+      detKInverse = this.modInverse(detKMod26, this.ALPHABET_SIZE);
+    }
+
+    // 2. Generate a random, valid (invertible) 2x2 plaintext matrix P
+    while(!validPMatrixFound){
+      for(let i=0; i<2; i++) {
+        for(let j=0; j<2; j++) {
+          P_matrix[i][j] = Math.floor(Math.random() * this.ALPHABET_SIZE);
+        }
+      }
+      const detP = P_matrix[0][0] * P_matrix[1][1] - P_matrix[0][1] * P_matrix[1][0];
+      const detPMod26 = (detP % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
+      if(this.modInverse(detPMod26, this.ALPHABET_SIZE) !== -1){
+        validPMatrixFound = true;
+      }
+    }
+
+    // 3. Calculate the ciphertext matrix C = PK mod 26
+    const C_matrix = this.matrixMultiply(P_matrix, K_matrix);
+
+    // 4. Convert P and C matrices to 4-letter strings and populate fields
+    this.plaintext = this.numbersToText([P_matrix[0][0], P_matrix[0][1], P_matrix[1][0], P_matrix[1][1]]);
+    this.ciphertext = this.numbersToText([C_matrix[0][0], C_matrix[0][1], C_matrix[1][0], C_matrix[1][1]]);
+  }
+
   crackKey(): void {
     this.keyMatrixResult = null;
     this.error = null;
@@ -26,13 +78,13 @@ export class HillCrackerComponent {
       return;
     }
 
-    const P_flat = this.textToNumbers(this.plaintext);
-    const C_flat = this.textToNumbers(this.ciphertext);
-
-    const P_matrix: number[][] = [[P_flat[0], P_flat[1]], [P_flat[2], P_flat[3]]];
-    const C_matrix: number[][] = [[C_flat[0], C_flat[1]], [C_flat[2], C_flat[3]]];
-
     try {
+      const P_flat = this.textToNumbers(this.plaintext);
+      const C_flat = this.textToNumbers(this.ciphertext);
+
+      const P_matrix: number[][] = [[P_flat[0], P_flat[1]], [P_flat[2], P_flat[3]]];
+      const C_matrix: number[][] = [[C_flat[0], C_flat[1]], [C_flat[2], C_flat[3]]];
+      
       const P_inverse = this.getMatrixInverse(P_matrix);
       const K = this.matrixMultiply(P_inverse, C_matrix);
       this.keyMatrixResult = K;
@@ -52,6 +104,14 @@ export class HillCrackerComponent {
       }
     }
     return numbers;
+  }
+
+  private numbersToText(numbers: number[]): string {
+    let text = '';
+    for (const num of numbers) {
+      text += String.fromCharCode(num + 'A'.charCodeAt(0));
+    }
+    return text;
   }
 
   private getMatrixInverse(matrix: number[][]): number[][] {

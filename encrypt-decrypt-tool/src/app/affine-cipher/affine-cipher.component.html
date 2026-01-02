@@ -3,7 +3,7 @@
 
   <div>
     <label for="textInput">Text:</label>
-    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+    <input id="textInput" [(ngModel)]="text" (input)="onTextInput($event)" placeholder="Enter text">
   </div>
 
   <div>
@@ -15,7 +15,7 @@
 
   <div>
     <label for="betaKeyInput">Beta Key (b):</label>
-    <input id="betaKeyInput" type="number" [(ngModel)]="betaKey" min="0" max="25">
+    <input id="betaKeyInput" type="number" [(ngModel)]="betaKey" (input)="onBetaKeyInput($event)" min="0" max="25">
   </div>
 
   <div>

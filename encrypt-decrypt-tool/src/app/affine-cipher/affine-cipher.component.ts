@@ -22,6 +22,27 @@ export class AffineCipherComponent {
     this.alphaKey = this.possibleAlphaKeys[0]; // Set default to the first valid key
   }
 
+  onTextInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '');
+    this.text = filteredValue;
+    inputElement.value = filteredValue; // Update the input element's value directly
+  }
+
+  onBetaKeyInput(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    let keyValue = parseInt(inputElement.value, 10);
+
+    if (isNaN(keyValue)) {
+      this.betaKey = 0;
+      inputElement.value = '0';
+    } else {
+      keyValue = Math.max(0, Math.min(25, keyValue)); // Restrict between 0 and 25
+      this.betaKey = keyValue;
+      inputElement.value = keyValue.toString(); // Update input element's value
+    }
+  }
+
   encrypt(): void {
     this.result = this.affineCipher(this.text, this.alphaKey, this.betaKey, true);
   }
@@ -36,16 +57,14 @@ export class AffineCipherComponent {
 
     // Check if alpha is valid for decryption
     if (!encrypt && this.gcd(alpha, m) !== 1) {
-      this.result = 'Error: Alpha key is not valid for decryption. gcd(alpha, 26) must be 1.';
-      return '';
+      return 'Error: Alpha key is not valid for decryption. gcd(alpha, 26) must be 1.';
     }
 
     let alphaInverse = -1;
     if (!encrypt) {
       alphaInverse = this.modInverse(alpha, m);
       if (alphaInverse === -1) {
-        this.result = 'Error: Modular inverse for alpha key not found. Alpha key might be invalid.';
-        return '';
+        return 'Error: Modular inverse for alpha key not found. Alpha key might be invalid.';
       }
     }
 
@@ -75,10 +94,7 @@ export class AffineCipherComponent {
         }
         output += String.fromCharCode(transformedX + 'a'.charCodeAt(0));
       }
-      // Keep non-alphabetic characters as they are
-      else {
-        output += char;
-      }
+      // Non-alphabetic characters are not processed, and not added to output
     }
     return output;
   }
@@ -91,7 +107,7 @@ export class AffineCipherComponent {
     return a;
   }
 
-  // Function to find modular multiplicative inverse using extended Euclidean algorithm
+  // Function to find modular multiplicative inverse
   private modInverse(a: number, m: number): number {
     for (let x = 1; x < m; x++) {
       if (((a % m) * (x % m)) % m === 1) {
