@@ -1,0 +1,23 @@
+<div>
+  <h2>Caesar Cipher</h2>
+
+  <div>
+    <label for="textInput">Text:</label>
+    <input id="textInput" [(ngModel)]="text" placeholder="Enter text">
+  </div>
+
+  <div>
+    <label for="keyInput">Key (0-25):</label>
+    <input id="keyInput" type="number" [(ngModel)]="key" min="0" max="25">
+  </div>
+
+  <div>
+    <button (click)="encrypt()">Encrypt</button>
+    <button (click)="decrypt()">Decrypt</button>
+  </div>
+
+  <div>
+    <h3>Result:</h3>
+    <p>{{ result }}</p>
+  </div>
+</div>
