@@ -33,7 +33,7 @@
     <p>{{ errorMessage }}</p>
   </div>
 
-  <div>
+  <div *ngIf="result" class="result-display">
     <h3>Result:</h3>
     <p>{{ result }}</p>
   </div>

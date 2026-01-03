@@ -20,7 +20,7 @@
     <button (click)="generateValidPair()">Generate Valid Pair</button>
   </div>
 
-  <div *ngIf="keyMatrixResult">
+  <div *ngIf="keyMatrixResult" class="result-display">
     <h3>Deduced Key Matrix (K):</h3>
     <div *ngIf="!errorMessage" class="key-matrix-display">
       <div>[{{ keyMatrixResult[0][0] }}, {{ keyMatrixResult[0][1] }}]</div>

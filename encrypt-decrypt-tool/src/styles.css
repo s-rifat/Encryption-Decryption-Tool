@@ -126,6 +126,17 @@ input, select {
   font-size: 1rem;
 }
 
+/* Autofill styles */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0px 1000px var(--background-color) inset !important;
+    -webkit-text-fill-color: var(--text-color) !important;
+    caret-color: var(--text-color) !important; /* Ensure cursor color is also correct */
+}
+
+
 input:focus, select:focus {
   outline: none;
   border-color: var(--primary-color);
@@ -150,4 +161,30 @@ input:focus, select:focus {
 
 .fade-in {
   animation: fadeIn 0.5s ease-out forwards;
+}
+
+@keyframes resultDisplay {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.result-display {
+  animation: resultDisplay 0.6s ease-out forwards;
+  padding: 1rem; /* Add some padding around the result */
+  border: 1px solid rgba(66, 66, 66, 0.7); /* Reduced opacity for border */
+  border-radius: 5px;
+  background-color: var(--background-color); /* Use the main background color */
+  word-wrap: break-word; /* Ensure long results wrap */
+}
+
+.result-display h3 {
+  color: var(--text-color); /* Make heading color consistent */
+  margin-bottom: 0.5rem;
+  text-shadow: none; /* Remove text-shadow for a cleaner look */
+}
+
+.result-display p {
+  font-size: 1.2rem;
+  color: var(--primary-color); /* Highlight the result text */
+  font-weight: bold;
 }
