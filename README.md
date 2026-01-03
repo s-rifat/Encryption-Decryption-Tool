@@ -1,4 +1,4 @@
-# Encryption/Decryption Tool
+# Encryption/Decryption Tool & Crypto Cracker
 
 This is an Angular-based web application providing an interactive tool for encrypting and decrypting messages using several classical ciphers. It also includes a specialized cracker for the Hill Cipher using a known plaintext attack.
 
