@@ -32,15 +32,35 @@ Below are some screenshots illustrating the application's user interface and fun
 
 ## Prerequisites
 
-Before running this application, ensure you have the following installed on your system (Windows recommended for these instructions):
+This project was developed and tested with the following environment. To ensure compatibility and avoid potential issues, it is highly recommended to set up your environment as follows.
 
-*   **Node.js and npm:**
-    *   Download and install from [nodejs.org](https://nodejs.org/). `npm` (Node Package Manager) is included with Node.js.
-*   **Angular CLI:**
-    *   Install globally using npm:
-        ```bash
-        npm install -g @angular/cli
-        ```
+**Recommended Versions:**
+*   **Node.js:** `v20.19.6`
+*   **npm (Package Manager):** `v10.8.2`
+*   **Angular CLI:** `v21.0.4`
+
+### Step 1: Install nvm-windows
+Using a version manager for Node.js is the most reliable way to set up the environment.
+
+1.  **Download `nvm-windows`:** Go to the [nvm-windows releases page](https://github.com/coreybutler/nvm-windows/releases) and download the `nvm-setup.zip` file from the latest release.
+2.  **Run the Installer:** Extract the zip file and run the installer. **Note:** It's recommended to uninstall any existing versions of Node.js before installing `nvm-windows` to avoid conflicts.
+
+### Step 2: Configure Node.js & Angular CLI
+1.  **Open Command Prompt or PowerShell as an Administrator.**
+
+2.  **Install and Use the Correct Node.js Version:**
+    Run the following commands to install and use the project's recommended Node.js version.
+    ```bash
+    nvm install 20.19.6
+    nvm use 20.19.6
+    ```
+    This command will set your current terminal session to use Node.js `v20.19.6` and `npm v10.8.2`.
+
+3.  **Install Angular CLI:**
+    Install the specific version of Angular CLI used for this project globally:
+    ```bash
+    npm install -g @angular/cli@21.0.4
+    ```
 
 ## Installation
 
