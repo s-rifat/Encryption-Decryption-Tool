@@ -66,6 +66,10 @@ export class PlayfairCipherComponent {
       this.errorMessage = 'Please enter a keyword.';
       return;
     }
+    if (this.text.length % 2 !== 0) {
+      this.errorMessage = 'Ciphertext for Playfair decryption must have an even length.';
+      return;
+    }
     // Matrix is already generated on keyword input, but ensure it's up-to-date
     this.generateMatrix(this.keyword);
     let processedText = this.preprocessText(this.text, false); // Decryption input needs less preprocessing
