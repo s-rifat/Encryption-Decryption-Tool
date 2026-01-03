@@ -27,7 +27,7 @@ Before running this application, ensure you have the following installed on your
 
 1.  **Clone the repository:**
     ```bash
-    git clone [YOUR_GITHUB_REPOSITORY_LINK_HERE]
+    git clone https://github.com/s-rifat/Encryption-Decryption-Tool.git
     cd Encryption-Decryption-Tool
     ```
 2.  **Navigate to the Angular project directory:**
