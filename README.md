@@ -11,6 +11,25 @@ This is an Angular-based web application providing an interactive tool for encry
 *   **Hill Cracker (Known Plaintext Attack):** A tool to deduce the Hill Cipher's key matrix from known plaintext-ciphertext pairs. Includes a valid pair generator.
 *   **User-Friendly Interface:** Clean, dark-themed UI with real-time input validation and animated result displays.
 
+## UI Screenshots
+
+Below are some screenshots illustrating the application's user interface and functionality.
+
+### Caesar Cipher
+<img src="./images/caeser.png" alt="Caesar Cipher Screenshot" width="500" height="auto" style="display: inline-block; margin: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
+### Affine Cipher
+<img src="./images/affine.png" alt="Affine Cipher Screenshot" width="500" height="auto" style="display: inline-block; margin: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
+### Playfair Cipher
+<img src="./images/playfair.png" alt="Playfair Cipher Screenshot" width="500" height="auto" style="display: inline-block; margin: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
+### Hill Cipher
+<img src="./images/hill-cipher.png" alt="Hill Cipher Screenshot" width="500" height="auto" style="display: inline-block; margin: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
+### Hill Cipher Cracker
+<img src="./images/hill-cracker.png" alt="Hill Cracker Screenshot" width="500" height="auto" style="display: inline-block; margin: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
 ## Prerequisites
 
 Before running this application, ensure you have the following installed on your system (Windows recommended for these instructions):
