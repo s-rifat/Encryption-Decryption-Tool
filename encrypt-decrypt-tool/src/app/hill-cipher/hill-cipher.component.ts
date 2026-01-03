@@ -115,8 +115,8 @@ export class HillCipherComponent {
       const p1 = char1.charCodeAt(0) - 'A'.charCodeAt(0);
       const p2 = char2.charCodeAt(0) - 'A'.charCodeAt(0);
 
-      let c1 = (actualKey[0][0] * p1 + actualKey[0][1] * p2) % this.ALPHABET_SIZE;
-      let c2 = (actualKey[1][0] * p1 + actualKey[1][1] * p2) % this.ALPHABET_SIZE;
+      let c1 = (p1 * actualKey[0][0] + p2 * actualKey[1][0]) % this.ALPHABET_SIZE;
+      let c2 = (p1 * actualKey[0][1] + p2 * actualKey[1][1]) % this.ALPHABET_SIZE;
 
       // Ensure positive results for modulo
       c1 = (c1 + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
