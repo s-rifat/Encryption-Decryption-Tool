@@ -25,8 +25,12 @@
   </div>
 
   <div>
-    <button (click)="encrypt()" [disabled]="!text">Encrypt</button>
-    <button (click)="decrypt()" [disabled]="!text">Decrypt</button>
+    <button (click)="encrypt()" [disabled]="!text || isTextLengthInvalid">Encrypt</button>
+    <button (click)="decrypt()" [disabled]="!text || isTextLengthInvalid">Decrypt</button>
+  </div>
+
+  <div *ngIf="isTextLengthInvalid" class="error-message">
+    <p>Plaintext length must be even for 2x2 Hill Cipher.</p>
   </div>
 
   <div *ngIf="errorMessage !== null" class="error-message">

@@ -13,7 +13,15 @@ export class HillCrackerComponent {
   plaintext: string = '';
   ciphertext: string = '';
   keyMatrixResult: number[][] | null = null;
-  errorMessage: string | null = null; // Renamed from 'error'
+  errorMessage: string | null = null;
+
+  get showLengthWarning(): boolean {
+    if (this.plaintext === '' && this.ciphertext === '') {
+      return false;
+    }
+    // Show warning if either field has input but is not 4 characters long
+    return (this.plaintext.length > 0 && this.plaintext.length !== 4) || (this.ciphertext.length > 0 && this.ciphertext.length !== 4);
+  }
 
   private readonly ALPHABET_SIZE = 26;
 

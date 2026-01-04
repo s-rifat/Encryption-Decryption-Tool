@@ -21,6 +21,10 @@ export class HillCipherComponent {
     this.generateValidKey(); // Generate a valid key on component initialization
   }
 
+  get isTextLengthInvalid(): boolean {
+    return this.text.length > 0 && this.text.length % 2 !== 0;
+  }
+
   onTextInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
