@@ -17,7 +17,7 @@ export class CaesarCipherComponent {
 
   onTextInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase(); // Ensure uppercase as per previous request
+    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
     this.text = filteredValue;
     inputElement.value = filteredValue; // Update the input element's value directly
     this.errorMessage = null; // Clear error message on input change
@@ -61,7 +61,7 @@ export class CaesarCipherComponent {
     for (let i = 0; i < input.length; i++) {
       let char = input[i];
       // Only process alphabetic characters, non-alphabetic are ignored due to onTextInput filtering
-      if (char >= 'A' && char <= 'Z') { // Now only handling uppercase due to onTextInput
+      if (char >= 'A' && char <= 'Z') { // Only handling uppercase due to onTextInput
         let offset = encrypt ? key : -key;
         char = String.fromCharCode(((char.charCodeAt(0) - 'A'.charCodeAt(0) + offset + 26) % 26) + 'A'.charCodeAt(0));
       }

@@ -157,7 +157,7 @@ export class PlayfairCipherComponent {
       let pos2 = this.findCharPosition(char2);
 
       if (!pos1 || !pos2) {
-        // This should not happen with the new validation, but as a fallback:
+        // This should not happen with the validation, but as a fallback:
         output += char1 + char2;
         continue;
       }
