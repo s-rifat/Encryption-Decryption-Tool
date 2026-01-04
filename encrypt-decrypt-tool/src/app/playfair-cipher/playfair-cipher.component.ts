@@ -28,6 +28,7 @@ export class PlayfairCipherComponent {
     this.text = filteredValue;
     inputElement.value = filteredValue;
     this.errorMessage = null; // Clear error message on input change
+    this.result = ''; // Clear result on input change
   }
   
   onKeywordInput(event: Event): void {
@@ -38,6 +39,7 @@ export class PlayfairCipherComponent {
     inputElement.value = filteredValue;
     this.generateMatrix(this.keyword); // Regenerate matrix when keyword changes
     this.errorMessage = null; // Clear error message on input change
+    this.result = ''; // Clear result on input change
   }
   
   encrypt(): void {

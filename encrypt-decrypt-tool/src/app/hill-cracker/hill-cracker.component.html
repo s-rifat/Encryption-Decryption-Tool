@@ -15,12 +15,16 @@
   </div>
 
   <div>
-    <button (click)="crackKey()" [disabled]="plaintext.length !== 4 || ciphertext.length !== 4">Crack Key</button>
+    <button (click)="crackKey()" [disabled]="plaintext.length !== 4 || ciphertext.length !== 4 || !isPlaintextMatrixInvertible">Crack Key</button>
     <button (click)="generateValidPair()">Generate Valid Pair</button>
   </div>
 
   <div *ngIf="showLengthWarning" class="error-message">
     <p>Plaintext and Ciphertext must both be exactly 4 letters long to enable "Crack Key".</p>
+  </div>
+  
+  <div *ngIf="plaintext.length === 4 && !isPlaintextMatrixInvertible" class="error-message">
+    <p>Invalid Plaintext for Cracking: The matrix formed by the plaintext is not invertible.</p>
   </div>
 
   <div *ngIf="keyMatrixResult" class="result-display">

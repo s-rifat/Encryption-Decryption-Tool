@@ -25,12 +25,16 @@
   </div>
 
   <div>
-    <button (click)="encrypt()" [disabled]="!text || isTextLengthInvalid">Encrypt</button>
-    <button (click)="decrypt()" [disabled]="!text || isTextLengthInvalid">Decrypt</button>
+    <button (click)="encrypt()" [disabled]="!text || isTextLengthInvalid || !isKeyMatrixValid">Encrypt</button>
+    <button (click)="decrypt()" [disabled]="!text || isTextLengthInvalid || !isKeyMatrixValid">Decrypt</button>
   </div>
 
   <div *ngIf="isTextLengthInvalid" class="error-message">
     <p>Plaintext length must be even for 2x2 Hill Cipher.</p>
+  </div>
+
+  <div *ngIf="!isKeyMatrixValid" class="error-message">
+    <p>Invalid Key Matrix: Its determinant must be coprime to 26.</p>
   </div>
 
   <div *ngIf="errorMessage !== null" class="error-message">

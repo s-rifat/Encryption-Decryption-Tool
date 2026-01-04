@@ -23,6 +23,22 @@ export class HillCrackerComponent {
     return (this.plaintext.length > 0 && this.plaintext.length !== 4) || (this.ciphertext.length > 0 && this.ciphertext.length !== 4);
   }
 
+  get isPlaintextMatrixInvertible(): boolean {
+    if (this.plaintext.length !== 4) {
+      return true; // Not enough input to form a matrix, so no invertibility issue yet
+    }
+    try {
+      const P_flat = this.textToNumbers(this.plaintext);
+      const P_matrix: number[][] = [[P_flat[0], P_flat[1]], [P_flat[2], P_flat[3]]];
+      // Check if inverse can be found without throwing error
+      // The getMatrixInverse method throws an error if not invertible, so we catch it.
+      this.getMatrixInverse(P_matrix); 
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   private readonly ALPHABET_SIZE = 26;
 
   onTextInput(event: Event, type: 'plaintext' | 'ciphertext'): void {

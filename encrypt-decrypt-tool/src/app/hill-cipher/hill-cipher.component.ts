@@ -25,12 +25,19 @@ export class HillCipherComponent {
     return this.text.length > 0 && this.text.length % 2 !== 0;
   }
 
+  get isKeyMatrixValid(): boolean {
+    const det = (this.keyMatrix[0][0] * this.keyMatrix[1][1] - this.keyMatrix[0][1] * this.keyMatrix[1][0]);
+    const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
+    return this.modInverse(detMod26, this.ALPHABET_SIZE) !== -1;
+  }
+
   onTextInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
     const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
     this.text = filteredValue;
     inputElement.value = filteredValue;
     this.errorMessage = null; // Clear error message on input change
+    this.result = ''; // Clear result on input change
   }
 
   onKeyInput(row: number, col: number, event: Event): void {
@@ -46,10 +53,12 @@ export class HillCipherComponent {
       inputElement.value = keyValue.toString();
     }
     this.errorMessage = null; // Clear error message on input change
+    this.result = ''; // Clear result on input change
   }
 
   generateValidKey(): void {
     this.errorMessage = null; // Clear previous errors
+    this.result = ''; // Clear result when generating a new key
     let det = 0;
     let detInverse = -1;
     let tempMatrix: number[][] = [[0,0],[0,0]];
