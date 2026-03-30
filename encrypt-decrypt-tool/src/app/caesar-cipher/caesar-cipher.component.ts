@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { filterAlphabeticInput } from '../utils/input.utils';
 
 @Component({
   selector: 'app-caesar-cipher',
@@ -15,13 +16,16 @@ export class CaesarCipherComponent {
   result: string = '';
   errorMessage: string | null = null;
 
-  onTextInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
-    this.text = filteredValue;
-    inputElement.value = filteredValue; // Update the input element's value directly
-    this.errorMessage = null; // Clear error message on input change
+  private clearResultsAndErrors(): void {
+    this.errorMessage = null;
+    this.result = '';
   }
+
+  onTextInput(event: Event): void {
+    this.text = filterAlphabeticInput(event);
+    this.clearResultsAndErrors(); // Clear both on input change
+  }
+
 
   onKeyInput(event: Event): void {
     const inputElement = event.target as HTMLInputElement;
@@ -35,11 +39,11 @@ export class CaesarCipherComponent {
       this.key = keyValue;
       inputElement.value = keyValue.toString(); // Update input element's value
     }
-    this.errorMessage = null; // Clear error message on input change
+    this.clearResultsAndErrors(); // Clear both on key input change
   }
 
   encrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to encrypt.';
       return;
@@ -48,7 +52,7 @@ export class CaesarCipherComponent {
   }
 
   decrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to decrypt.';
       return;

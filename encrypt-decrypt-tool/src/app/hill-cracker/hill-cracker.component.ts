@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { modInverse, gcd } from '../utils/crypto.utils';
+import { filterAlphabeticInput } from '../utils/input.utils'; // Import the new utility
 
 @Component({
   selector: 'app-hill-cracker',
@@ -14,6 +16,11 @@ export class HillCrackerComponent {
   ciphertext: string = '';
   keyMatrixResult: number[][] | null = null;
   errorMessage: string | null = null;
+
+  private clearResultsAndErrors(): void {
+    this.errorMessage = null;
+    this.keyMatrixResult = null;
+  }
 
   get showLengthWarning(): boolean {
     if (this.plaintext === '' && this.ciphertext === '') {
@@ -42,21 +49,17 @@ export class HillCrackerComponent {
   private readonly ALPHABET_SIZE = 26;
 
   onTextInput(event: Event, type: 'plaintext' | 'ciphertext'): void {
-    const inputElement = event.target as HTMLInputElement;
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    const filteredValue = filterAlphabeticInput(event); // Use the utility function
     if (type === 'plaintext') {
       this.plaintext = filteredValue;
     } else {
       this.ciphertext = filteredValue;
     }
-    inputElement.value = filteredValue;
-    this.errorMessage = null; // Clear error message on input change
-    this.keyMatrixResult = null; // Clear key result as well
+    this.clearResultsAndErrors();
   }
 
   generateValidPair(): void {
-    this.errorMessage = null; // Clear previous errors
-    this.keyMatrixResult = null; // Clear previous results
+    this.clearResultsAndErrors();
     let validPMatrixFound = false;
     let P_matrix: number[][] = [[0,0],[0,0]];
     let K_matrix: number[][] = [[0,0],[0,0]];
@@ -71,7 +74,7 @@ export class HillCrackerComponent {
       }
       const detK = K_matrix[0][0] * K_matrix[1][1] - K_matrix[0][1] * K_matrix[1][0];
       const detKMod26 = (detK % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
-      detKInverse = this.modInverse(detKMod26, this.ALPHABET_SIZE);
+      detKInverse = modInverse(detKMod26, this.ALPHABET_SIZE);
     }
 
     // 2. Generate a random, valid (invertible) 2x2 plaintext matrix P
@@ -83,7 +86,7 @@ export class HillCrackerComponent {
       }
       const detP = P_matrix[0][0] * P_matrix[1][1] - P_matrix[0][1] * P_matrix[1][0];
       const detPMod26 = (detP % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
-      if(this.modInverse(detPMod26, this.ALPHABET_SIZE) !== -1){
+      if(modInverse(detPMod26, this.ALPHABET_SIZE) !== -1){
         validPMatrixFound = true;
       }
     }
@@ -97,8 +100,7 @@ export class HillCrackerComponent {
   }
 
   crackKey(): void {
-    this.keyMatrixResult = null;
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors();
 
     if (this.plaintext.length !== 4 || this.ciphertext.length !== 4) {
       this.errorMessage = 'Plaintext and Ciphertext must both be 4 letters long.';
@@ -145,7 +147,7 @@ export class HillCrackerComponent {
     const det = (matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]);
     const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
 
-    const detInverse = this.modInverse(detMod26, this.ALPHABET_SIZE);
+    const detInverse = modInverse(detMod26, this.ALPHABET_SIZE);
     if (detInverse === -1) {
       throw new Error(`Determinant of plaintext matrix is ${detMod26}. Inverse does not exist. Cannot crack key.`);
     }
@@ -179,14 +181,5 @@ export class HillCrackerComponent {
       }
     }
     return resultMatrix;
-  }
-
-  private modInverse(a: number, m: number): number {
-    for (let x = 1; x < m; x++) {
-      if (((a * x) % m) === 1) {
-        return x;
-      }
-    }
-    return -1; // Inverse doesn't exist
   }
 }

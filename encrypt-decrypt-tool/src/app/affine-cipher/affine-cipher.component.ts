@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { modInverse, gcd } from '../utils/crypto.utils';
+import { filterAlphabeticInput } from '../utils/input.utils';
 
 @Component({
   selector: 'app-affine-cipher',
@@ -19,16 +21,18 @@ export class AffineCipherComponent {
   // Possible values for alpha where gcd(alpha, 26) = 1
   possibleAlphaKeys: number[] = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25];
 
+  private clearResultsAndErrors(): void {
+    this.errorMessage = null;
+    this.result = '';
+  }
+
   constructor() {
     this.alphaKey = this.possibleAlphaKeys[0]; // Set default to the first valid key
   }
 
   onTextInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase(); // Ensure uppercase
-    this.text = filteredValue;
-    inputElement.value = filteredValue; // Update the input element's value directly
-    this.errorMessage = null; // Clear error message on input change
+    this.text = filterAlphabeticInput(event);
+    this.clearResultsAndErrors();
   }
 
   onBetaKeyInput(event: Event): void {
@@ -43,11 +47,11 @@ export class AffineCipherComponent {
       this.betaKey = keyValue;
       inputElement.value = keyValue.toString(); // Update input element's value
     }
-    this.errorMessage = null; // Clear error message on input change
+    this.clearResultsAndErrors();
   }
 
   encrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to encrypt.';
       return;
@@ -60,7 +64,7 @@ export class AffineCipherComponent {
   }
 
   decrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to decrypt.';
       return;
@@ -77,13 +81,13 @@ export class AffineCipherComponent {
     const m = 26; // Modulo for English alphabet
 
     // Check if alpha is valid for decryption
-    if (!encrypt && this.gcd(alpha, m) !== 1) {
+    if (!encrypt && gcd(alpha, m) !== 1) {
       return 'Error: Alpha key is not valid for decryption. gcd(alpha, 26) must be 1.';
     }
 
     let alphaInverse = -1;
     if (!encrypt) {
-      alphaInverse = this.modInverse(alpha, m);
+      alphaInverse = modInverse(alpha, m);
       if (alphaInverse === -1) {
         return 'Error: Modular inverse for alpha key not found. Alpha key might be invalid.';
       }
@@ -107,23 +111,5 @@ export class AffineCipherComponent {
       // Assuming all input is uppercase after onTextInput, so no else if for lowercase
     }
     return output;
-  }
-
-  // Function to calculate GCD
-  private gcd(a: number, b: number): number {
-    while (b) {
-      [a, b] = [b, a % b];
-    }
-    return a;
-  }
-
-  // Function to find modular multiplicative inverse
-  private modInverse(a: number, m: number): number {
-    for (let x = 1; x < m; x++) {
-      if (((a * x) % m) === 1) {
-        return x;
-      }
-    }
-    return -1; // Inverse doesn't exist
   }
 }

@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { filterAlphabeticInput } from '../utils/input.utils';
 
 @Component({
   selector: 'app-playfair-cipher',
@@ -16,19 +17,19 @@ export class PlayfairCipherComponent {
   matrix: string[][] = [];
   errorMessage: string | null = null;
 
+  private clearResultsAndErrors(): void {
+    this.errorMessage = null;
+    this.result = '';
+  }
+
   constructor() {
     // Generate initial matrix with a default keyword or empty to start
     this.generateMatrix(this.keyword);
   }
 
   onTextInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    // Filter out non-alphabetic characters and convert to uppercase
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
-    this.text = filteredValue;
-    inputElement.value = filteredValue;
-    this.errorMessage = null; // Clear error message on input change
-    this.result = ''; // Clear result on input change
+    this.text = filterAlphabeticInput(event);
+    this.clearResultsAndErrors();
   }
   
   onKeywordInput(event: Event): void {
@@ -38,12 +39,11 @@ export class PlayfairCipherComponent {
     this.keyword = filteredValue;
     inputElement.value = filteredValue;
     this.generateMatrix(this.keyword); // Regenerate matrix when keyword changes
-    this.errorMessage = null; // Clear error message on input change
-    this.result = ''; // Clear result on input change
+    this.clearResultsAndErrors();
   }
   
   encrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors();
     if (!this.text) {
       this.errorMessage = 'Please enter text to encrypt.';
       return;
@@ -59,7 +59,7 @@ export class PlayfairCipherComponent {
   }
 
   decrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors();
     if (!this.text) {
       this.errorMessage = 'Please enter text to decrypt.';
       return;

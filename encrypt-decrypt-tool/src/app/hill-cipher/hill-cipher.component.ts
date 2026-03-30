@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { modInverse, gcd } from '../utils/crypto.utils';
+import { filterAlphabeticInput } from '../utils/input.utils';
 
 @Component({
   selector: 'app-hill-cipher',
@@ -17,6 +19,11 @@ export class HillCipherComponent {
 
   private readonly ALPHABET_SIZE = 26;
 
+  private clearResultsAndErrors(): void {
+    this.errorMessage = null;
+    this.result = '';
+  }
+
   constructor() {
     this.generateValidKey(); // Generate a valid key on component initialization
   }
@@ -28,16 +35,12 @@ export class HillCipherComponent {
   get isKeyMatrixValid(): boolean {
     const det = (this.keyMatrix[0][0] * this.keyMatrix[1][1] - this.keyMatrix[0][1] * this.keyMatrix[1][0]);
     const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
-    return this.modInverse(detMod26, this.ALPHABET_SIZE) !== -1;
+    return modInverse(detMod26, this.ALPHABET_SIZE) !== -1;
   }
 
   onTextInput(event: Event): void {
-    const inputElement = event.target as HTMLInputElement;
-    const filteredValue = inputElement.value.replace(/[^a-zA-Z]/g, '').toUpperCase();
-    this.text = filteredValue;
-    inputElement.value = filteredValue;
-    this.errorMessage = null; // Clear error message on input change
-    this.result = ''; // Clear result on input change
+    this.text = filterAlphabeticInput(event);
+    this.clearResultsAndErrors(); // Clear both on input change
   }
 
   onKeyInput(row: number, col: number, event: Event): void {
@@ -52,13 +55,11 @@ export class HillCipherComponent {
       this.keyMatrix[row][col] = keyValue;
       inputElement.value = keyValue.toString();
     }
-    this.errorMessage = null; // Clear error message on input change
-    this.result = ''; // Clear result on input change
+    this.clearResultsAndErrors(); // Clear both on key input change
   }
 
   generateValidKey(): void {
-    this.errorMessage = null; // Clear previous errors
-    this.result = ''; // Clear result when generating a new key
+    this.clearResultsAndErrors(); // Clear previous errors/results before new key
     let det = 0;
     let detInverse = -1;
     let tempMatrix: number[][] = [[0,0],[0,0]];
@@ -71,13 +72,13 @@ export class HillCipherComponent {
       }
       det = tempMatrix[0][0] * tempMatrix[1][1] - tempMatrix[0][1] * tempMatrix[1][0];
       const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
-      detInverse = this.modInverse(detMod26, this.ALPHABET_SIZE);
+      detInverse = modInverse(detMod26, this.ALPHABET_SIZE);
     }
     this.keyMatrix = tempMatrix;
   }
 
   encrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to encrypt.';
       return;
@@ -91,7 +92,7 @@ export class HillCipherComponent {
   }
 
   decrypt(): void {
-    this.errorMessage = null; // Clear previous errors
+    this.clearResultsAndErrors(); // Clear previous errors/results before new operation
     if (!this.text) {
       this.errorMessage = 'Please enter text to decrypt.';
       return;
@@ -149,7 +150,7 @@ export class HillCipherComponent {
     const det = (key[0][0] * key[1][1] - key[0][1] * key[1][0]);
     const detMod26 = (det % this.ALPHABET_SIZE + this.ALPHABET_SIZE) % this.ALPHABET_SIZE;
 
-    const detInverse = this.modInverse(detMod26, this.ALPHABET_SIZE);
+    const detInverse = modInverse(detMod26, this.ALPHABET_SIZE);
     if (detInverse === -1) {
       throw new Error(`Determinant inverse does not exist. Determinant mod 26 is ${detMod26}. Key matrix is not invertible.`);
     }
@@ -168,22 +169,5 @@ export class HillCipherComponent {
       }
     }
     return inverseMatrix;
-  }
-
-  private gcd(a: number, b: number): number {
-    while (b) {
-      [a, b] = [b, a % b];
-    }
-    return a;
-  }
-
-  // Function to find modular multiplicative inverse
-  private modInverse(a: number, m: number): number {
-    for (let x = 1; x < m; x++) {
-      if (((a * x) % m) === 1) {
-        return x;
-      }
-    }
-    return -1; // Inverse doesn't exist
   }
 }
